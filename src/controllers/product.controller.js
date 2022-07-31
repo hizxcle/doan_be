@@ -22,7 +22,7 @@ productController.getById = async (req, res) => {
 };
 
 productController.getByName = async (req, res) => {
-    const [result] = await productModel.getByName(req.params.tensp);
+    const result = await productModel.getByName(req.params.tensp);
     if (result instanceof Error) return res.status(500).json('Error!!!');
     res.status(200).json(result);
 };

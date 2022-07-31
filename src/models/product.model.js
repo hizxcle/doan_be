@@ -2,7 +2,7 @@ import pool from '~/configs/db.configs';
 const queries = {
     getAll: 'select * from sanpham',
     getById: 'select * from sanpham where masp = ?',
-    getByName: 'select * from sanpham where tensp = ?',
+    getByName: 'select * from sanpham where tensp like ?',
     getAllProType: 'select distinct loaisp from sanpham where 1',
     deleteById: 'delete from sanpham where masp = ?',
     insert: 'insert into sanpham (tensp,loaisp,gia,nhacungcap, donvi, soluong) values (?,?,?,?,?,?)',
@@ -22,6 +22,7 @@ productModel.getById = async (id) => {
 };
 productModel.getByName = async (name) => {
     try {
+        name = `%${name}%`;
         const [product] = await pool.execute(queries.getByName, [name]);
         return product;
     } catch (error) {
