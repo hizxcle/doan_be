@@ -123,9 +123,11 @@ productController.updateProduct = async (req, res) => {
     const oldAvatar = oldProduct.anhdaidien;
     const oldImgs = oldProduct.anhsp.split('||');
     const avatarImg = util.renameImg(req.files.thumb[0], result.insertId);
-    const otherImgs = req.files.images.map((ele, index) => {
-        return util.renameImg(ele, result.insertId, index);
-    });
+    const otherImgs = req.files.images
+        .map((ele, index) => {
+            return util.renameImg(ele, result.insertId, index);
+        })
+        .join('||');
     const { tensp, loaisp, gia, nhacungcap, donvi, soluong, anhdaidien, anhsp } = req.body;
     const newAvatar = anhdaidien || avatarImg;
     const newImgs = anhsp.concat('||', otherImgs);
