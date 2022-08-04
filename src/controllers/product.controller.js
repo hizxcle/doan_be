@@ -104,9 +104,9 @@ productController.insertProduct = async (req, res) => {
 };
 
 productController.updateProduct = async (req, res) => {
-    console.log('files', req.files);
-    console.log('body :', req.body);
-    console.log('header: ', req.headers);
+    console.log('controller files', req.files);
+    console.log('controller body :', req.body);
+    console.log('controller header: ', req.headers);
 
     const imgUrl = Object.values(req.files)
         .reduce((all, cur) => {
