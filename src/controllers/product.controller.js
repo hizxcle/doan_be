@@ -155,8 +155,7 @@ productController.updateProduct = async (req, res) => {
     let newImgs = anhsp;
     if (anhsp.length < 1) {
         newImgs = otherImgs;
-    }
-    if (otherImgs.length > 0) {
+    } else if (otherImgs.length > 0) {
         newImgs = anhsp.concat('||', otherImgs);
     }
     if (anhdaidien !== oldAvatar) util.deleteImg(oldAvatar);

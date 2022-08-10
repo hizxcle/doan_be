@@ -27,7 +27,7 @@ productModel.getByName = async (name) => {
     try {
         name = `%${name}%`;
 
-        const [product] = await pool.execute(queries.getByName, [name]);
+        const product = await pool.execute(queries.getByName, [name]);
 
         return product;
     } catch (error) {
