@@ -23,7 +23,13 @@ userController.logIn = async (req, res) => {
     console.log('controller check pass', checkPasswd);
     const token = util.generateToken(user);
     const rfToken = util.generateRefreshToken(user);
-    const role = user.quyen == 0 ? 'admin' : 'user';
+    let role = 'user';
+    if (user.quyen == 0) {
+        role = 'admin';
+    }
+    if (user.quyen == 2) {
+        role = 'superAdmin';
+    }
     const { matkhau: mk, quyen, ...info } = user;
 
     return !checkPasswd
@@ -37,10 +43,6 @@ userController.logIn = async (req, res) => {
 };
 userController.getAllUser = async (req, res) => {
     const result = await userModel.getAllUser();
-    return result instanceof Error ? res.status(501).json('wrong') : res.status(200).json(result);
-};
-userController.getAllAdmin = async (req, res) => {
-    const result = await userModel.getAllAdmin();
     return result instanceof Error ? res.status(501).json('wrong') : res.status(200).json(result);
 };
 userController.getById = async (req, res) => {
@@ -62,17 +64,24 @@ userController.updateInfo = async (req, res) => {
     return result instanceof Error ? res.status(501).json('wrong') : res.status(200).json(result);
 };
 userController.updateQuyen = async (req, res) => {
+    console.log('controller', req.body);
     const { quyen } = req.body;
     const id = req.params.id;
     const result = await userModel.updateQuyen(quyen, id);
     return result instanceof Error ? res.status(501).json('wrong') : res.status(200).json(result);
 };
 userController.updatePasswd = async (req, res) => {
-    const { passwd } = req.body;
+    const { oldPass, newPass } = req.body;
     const id = req.params.id;
-    const hash = await util.createPasswd(passwd);
-    const result = await userModel.updatePasswd(hash, id);
-    return result instanceof Error ? res.status(501).json('wrong') : res.status(200).json(result);
+    const [curUser] = await userModel.getById(id);
+    const checkPasswd = await util.checkPasswd(oldPass, curUser.matkhau);
+    if (checkPasswd) {
+        const hash = await util.createPasswd(newPass);
+        const result = await userModel.updatePasswd(hash, id);
+        return res.status(200).json(result);
+    } else {
+        return res.status(501).json('wrong');
+    }
 };
 
 export default userController;
